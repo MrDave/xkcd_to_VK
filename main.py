@@ -45,6 +45,7 @@ def main():
     title = comic["title"]
     path = PurePath(media_folder).joinpath(f"{title}.png")
     download_image(comic_image_url, media_folder, path)
+    print(comic["alt"])
 
 
 if __name__ == '__main__':
