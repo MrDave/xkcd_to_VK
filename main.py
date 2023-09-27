@@ -2,6 +2,7 @@ import requests
 from pathlib import Path, PurePath
 import argparse
 from environs import Env
+from pprint import pprint
 
 
 def download_image(url, media_folder, path, params=None):
@@ -26,6 +27,18 @@ def get_xkcd_meta(comic_id=None):
     return response.json()
 
 
+def get_group_info(user_token):
+    url = f"https://api.vk.com/method/groups.get"
+    params = {
+        "access_token": user_token,
+        "v": "5.150"
+    }
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    return response.json()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -39,13 +52,17 @@ def main():
     env = Env()
     env.read_env()
     media_folder = env.str("MEDIA_FOLDER")
+    vk_token = env.str("VK_USER_TOKEN")
 
-    comic = get_xkcd_meta(args.id)
-    comic_image_url = comic["img"]
-    title = comic["title"]
-    path = PurePath(media_folder).joinpath(f"{title}.png")
-    download_image(comic_image_url, media_folder, path)
-    print(comic["alt"])
+    # comic = get_xkcd_meta(args.id)
+    # comic_image_url = comic["img"]
+    # title = comic["title"]
+    # path = PurePath(media_folder).joinpath(f"{title}.png")
+    # download_image(comic_image_url, media_folder, path)
+    # print(comic["alt"])
+
+    groups = get_group_info(vk_token)
+    pprint(groups)
 
 
 if __name__ == '__main__':
