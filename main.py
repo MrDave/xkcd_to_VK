@@ -39,6 +39,21 @@ def get_group_info(user_token):
     return response.json()
 
 
+def get_upload_address(user_token, group_id):
+
+    url = f"https://api.vk.com/method/photos.getWallUploadServer"
+    params = {
+        "access_token": user_token,
+        "v": "5.150",
+        "group_id": group_id
+    }
+
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    return response.json()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -53,6 +68,7 @@ def main():
     env.read_env()
     media_folder = env.str("MEDIA_FOLDER")
     vk_token = env.str("VK_USER_TOKEN")
+    vk_group = env.str("VK_GROUP_ID")
 
     # comic = get_xkcd_meta(args.id)
     # comic_image_url = comic["img"]
@@ -61,8 +77,8 @@ def main():
     # download_image(comic_image_url, media_folder, path)
     # print(comic["alt"])
 
-    groups = get_group_info(vk_token)
-    pprint(groups)
+    server = get_upload_address(vk_token, vk_group)
+    pprint(server)
 
 
 if __name__ == '__main__':
