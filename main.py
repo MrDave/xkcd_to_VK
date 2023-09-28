@@ -54,6 +54,19 @@ def get_upload_address(user_token, group_id):
     return response.json()
 
 
+def upload_image(upload_url, image_path):
+    with open(image_path, "rb") as image:
+        url = upload_url
+        files = {
+            "photo": image
+        }
+
+        response = requests.post(url, files=files)
+        response.raise_for_status()
+
+        return response.json()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -77,8 +90,10 @@ def main():
     # download_image(comic_image_url, media_folder, path)
     # print(comic["alt"])
 
-    server = get_upload_address(vk_token, vk_group)
-    pprint(server)
+    upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
+    image_path = PurePath(media_folder).joinpath("Python.png")
+    response = upload_image(upload_address, image_path)
+    print(response)
 
 
 if __name__ == '__main__':
