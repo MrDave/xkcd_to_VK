@@ -28,7 +28,7 @@ def get_xkcd_meta(comic_id=None):
 
 
 def get_group_info(user_token):
-    url = f"https://api.vk.com/method/groups.get"
+    url = "https://api.vk.com/method/groups.get"
     params = {
         "access_token": user_token,
         "v": "5.150"
@@ -41,7 +41,7 @@ def get_group_info(user_token):
 
 def get_upload_address(user_token, group_id):
 
-    url = f"https://api.vk.com/method/photos.getWallUploadServer"
+    url = "https://api.vk.com/method/photos.getWallUploadServer"
     params = {
         "access_token": user_token,
         "v": "5.150",
@@ -65,6 +65,23 @@ def upload_image(upload_url, image_path):
         response.raise_for_status()
 
         return response.json()
+
+
+def save_wall_photo(user_token, group_id, upload_result):
+    url = "https://api.vk.com/method/photos.saveWallPhoto"
+    params = {
+        "group_id": group_id,
+        "access_token": user_token,
+        "v": "5.150",
+        "server": upload_result["server"],
+        "photo": upload_result["photo"],
+        "hash": upload_result["hash"],
+    }
+
+    response = requests.post(url, params=params)
+    response.raise_for_status()
+
+    return response.json()
 
 
 def main():
@@ -92,8 +109,8 @@ def main():
 
     upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
     image_path = PurePath(media_folder).joinpath("Python.png")
-    response = upload_image(upload_address, image_path)
-    print(response)
+    upload_response = upload_image(upload_address, image_path)
+    print(save_wall_photo(vk_token, vk_group, upload_response))
 
 
 if __name__ == '__main__':
