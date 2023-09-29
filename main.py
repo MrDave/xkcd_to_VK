@@ -85,7 +85,7 @@ def save_wall_photo(user_token, group_id, upload_result):
     return response.json()
 
 
-def post_on_wall(user_token, group_id, wall_save_response, alt_text):
+def post_on_wall(user_token, group_id, wall_save_response, caption):
     url = "https://api.vk.com/method/wall.post"
     photo_owner = wall_save_response["owner_id"]
     photo_id = wall_save_response["id"]
@@ -94,7 +94,7 @@ def post_on_wall(user_token, group_id, wall_save_response, alt_text):
         "v": "5.150",
         "attachments": f"photo{photo_owner}_{photo_id}",
         "owner_id": f"-{group_id}",
-        "message": alt_text,
+        "message": caption,
         "from_group": 1
     }
 
@@ -146,7 +146,8 @@ def main():
     upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
     upload_response = upload_image(upload_address, image_path)
     wall_save_response = save_wall_photo(vk_token, vk_group, upload_response)["response"][0]
-    wall_post = post_on_wall(vk_token, vk_group, wall_save_response, alt_text)
+    message_caption = f"{title}\n{alt_text}"
+    wall_post = post_on_wall(vk_token, vk_group, wall_save_response, message_caption)
     print(wall_post)
 
 
