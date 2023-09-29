@@ -119,16 +119,14 @@ def main():
     vk_token = env.str("VK_USER_TOKEN")
     vk_group = env.str("VK_GROUP_ID")
 
-    # comic = get_xkcd_meta(args.id)
-    # comic_image_url = comic["img"]
-    # title = comic["title"]
-    # path = PurePath(media_folder).joinpath(f"{title}.png")
-    # download_image(comic_image_url, media_folder, path)
-    # print(comic["alt"])
+    comic = get_xkcd_meta(args.id)
+    comic_image_url = comic["img"]
+    title = comic["title"]
+    image_path = PurePath(media_folder).joinpath(f"{title}.png")
+    download_image(comic_image_url, media_folder, image_path)
+    alt_text = comic["alt"]
 
     upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
-    image_path = PurePath(media_folder).joinpath("Python.png")
-    alt_text = "I wrote 20 short programs in Python yesterday.  It was wonderful.  Perl, I'm leaving you."
     upload_response = upload_image(upload_address, image_path)
     wall_save_response = save_wall_photo(vk_token, vk_group, upload_response)["response"][0]
     wall_post = post_on_wall(vk_token, vk_group, wall_save_response, alt_text)
