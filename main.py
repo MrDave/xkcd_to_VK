@@ -2,6 +2,7 @@ import requests
 from pathlib import Path, PurePath
 import argparse
 from environs import Env
+from random import randint
 from pprint import pprint
 
 
@@ -105,10 +106,17 @@ def post_on_wall(user_token, group_id, wall_save_response, alt_text):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
         "--id",
         help="id of comic to get",
         type=int
+    )
+    group.add_argument(
+        "-l",
+        "--latest",
+        help="get the latest comic",
+        action="store_true"
     )
 
     args = parser.parse_args()
@@ -119,7 +127,16 @@ def main():
     vk_token = env.str("VK_USER_TOKEN")
     vk_group = env.str("VK_GROUP_ID")
 
-    comic = get_xkcd_meta(args.id)
+    if args.id:
+        comic_id = args.id
+    elif args.latest:
+        comic_id = None
+    else:
+        comics_number = get_xkcd_meta()["num"]
+        random_id = randint(1, comics_number)
+        comic_id = random_id
+
+    comic = get_xkcd_meta(comic_id)
     comic_image_url = comic["img"]
     title = comic["title"]
     image_path = PurePath(media_folder).joinpath(f"{title}.png")
