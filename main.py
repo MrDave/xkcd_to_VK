@@ -84,6 +84,25 @@ def save_wall_photo(user_token, group_id, upload_result):
     return response.json()
 
 
+def post_on_wall(user_token, group_id, wall_save_response, alt_text):
+    url = "https://api.vk.com/method/wall.post"
+    photo_owner = wall_save_response["owner_id"]
+    photo_id = wall_save_response["id"]
+    params = {
+        "access_token": user_token,
+        "v": "5.150",
+        "attachments": f"photo{photo_owner}_{photo_id}",
+        "owner_id": f"-{group_id}",
+        "message": alt_text,
+        "from_group": 1
+    }
+
+    response = requests.post(url, params=params)
+    response.raise_for_status()
+
+    return response.json()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -109,8 +128,11 @@ def main():
 
     upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
     image_path = PurePath(media_folder).joinpath("Python.png")
+    alt_text = "I wrote 20 short programs in Python yesterday.  It was wonderful.  Perl, I'm leaving you."
     upload_response = upload_image(upload_address, image_path)
-    print(save_wall_photo(vk_token, vk_group, upload_response))
+    wall_save_response = save_wall_photo(vk_token, vk_group, upload_response)["response"][0]
+    wall_post = post_on_wall(vk_token, vk_group, wall_save_response, alt_text)
+    print(wall_post)
 
 
 if __name__ == '__main__':
