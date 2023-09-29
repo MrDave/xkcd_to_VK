@@ -123,7 +123,7 @@ def main():
 
     env = Env()
     env.read_env()
-    media_folder = env.str("MEDIA_FOLDER")
+    media_folder = env.str("MEDIA_FOLDER", "images")
     vk_token = env.str("VK_USER_TOKEN")
     vk_group = env.str("VK_GROUP_ID")
 
