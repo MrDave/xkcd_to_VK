@@ -3,7 +3,6 @@ from pathlib import Path, PurePath
 import argparse
 from environs import Env
 from random import randint
-from pprint import pprint
 
 
 def download_image(url, media_folder, path, params=None):
