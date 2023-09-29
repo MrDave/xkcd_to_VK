@@ -149,6 +149,7 @@ def main():
     message_caption = f"{title}\n{alt_text}"
     wall_post = post_on_wall(vk_token, vk_group, wall_save_response, message_caption)
     print(wall_post)
+    Path(image_path).unlink()
 
 
 if __name__ == '__main__':
