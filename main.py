@@ -55,15 +55,15 @@ def upload_image(upload_url, image_path):
     return response.json()
 
 
-def save_wall_photo(user_token, group_id, upload_result):
+def save_wall_photo(user_token, group_id, response_server, response_photo, response_hash):
     url = "https://api.vk.com/method/photos.saveWallPhoto"
     params = {
         "group_id": group_id,
         "access_token": user_token,
         "v": "5.150",
-        "server": upload_result["server"],
-        "photo": upload_result["photo"],
-        "hash": upload_result["hash"],
+        "server": response_server,
+        "photo": response_photo,
+        "hash": response_hash,
     }
 
     response = requests.post(url, params=params)
@@ -72,10 +72,8 @@ def save_wall_photo(user_token, group_id, upload_result):
     return response.json()
 
 
-def post_on_wall(user_token, group_id, wall_save_response, caption):
+def post_on_wall(user_token, group_id, photo_owner, photo_id, caption):
     url = "https://api.vk.com/method/wall.post"
-    photo_owner = wall_save_response["owner_id"]
-    photo_id = wall_save_response["id"]
     params = {
         "access_token": user_token,
         "v": "5.150",
@@ -112,9 +110,20 @@ def main():
 
     upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
     upload_response = upload_image(upload_address, image_path)
-    wall_save_response = save_wall_photo(vk_token, vk_group, upload_response)["response"][0]
+    upload_response_server = upload_response["server"]
+    upload_response_photo = upload_response["photo"]
+    upload_response_hash = upload_response["hash"]
+    wall_save_response = save_wall_photo(
+        vk_token,
+        vk_group,
+        upload_response_server,
+        upload_response_photo,
+        upload_response_hash
+    )["response"][0]
+    photo_owner = wall_save_response["owner_id"]
+    photo_id = wall_save_response["id"]
     message_caption = f"{title}\n{alt_text}"
-    wall_post = post_on_wall(vk_token, vk_group, wall_save_response, message_caption)
+    wall_post = post_on_wall(vk_token, vk_group, photo_owner, photo_id, message_caption)
     print(wall_post)
     Path(image_path).unlink()
 
