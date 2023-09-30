@@ -40,6 +40,7 @@ def get_upload_address(user_token, group_id):
 
     response = requests.get(url, params=params)
     response.raise_for_status()
+    check_vk_response(response)
 
     return response.json()
 
@@ -54,6 +55,7 @@ def upload_image(upload_url, image_path):
         response = requests.post(url, files=files)
     response.raise_for_status()
     response_dict = response.json()
+    check_vk_response(response)
 
     return response_dict["server"], response_dict["photo"], response_dict["hash"]
 
@@ -71,6 +73,7 @@ def save_wall_photo(user_token, group_id, response_server, response_photo, respo
 
     response = requests.post(url, params=params)
     response.raise_for_status()
+    check_vk_response(response)
 
     return response.json()
 
@@ -88,8 +91,17 @@ def post_on_wall(user_token, group_id, photo_owner, photo_id, caption):
 
     response = requests.post(url, params=params)
     response.raise_for_status()
+    check_vk_response(response)
 
     return response.json()
+
+
+def check_vk_response(response):
+    vk_response = response.json()
+    if "error" in vk_response:
+        error_message = vk_response["error"].get("error_msg", "Unknown error")
+        error_code = vk_response["error"].get("error_code", "Unknown error code")
+        raise requests.HTTPError(f"VK API responded with an error code {error_code}: {error_message}")
 
 
 def main():
