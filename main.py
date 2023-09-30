@@ -27,18 +27,6 @@ def get_xkcd_meta(comic_id=None):
     return response.json()
 
 
-def get_group_info(user_token):
-    url = "https://api.vk.com/method/groups.get"
-    params = {
-        "access_token": user_token,
-        "v": "5.150"
-    }
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-
-    return response.json()
-
-
 def get_upload_address(user_token, group_id):
 
     url = "https://api.vk.com/method/photos.getWallUploadServer"
