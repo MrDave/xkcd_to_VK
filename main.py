@@ -50,9 +50,9 @@ def upload_image(upload_url, image_path):
         }
 
         response = requests.post(url, files=files)
-        response.raise_for_status()
+    response.raise_for_status()
 
-        return response.json()
+    return response.json()
 
 
 def save_wall_photo(user_token, group_id, upload_result):
