@@ -24,7 +24,9 @@ def get_xkcd_meta(comic_id=None):
     response = requests.get(url)
     response.raise_for_status()
 
-    return response.json()
+    meta = response.json()
+
+    return meta["num"], meta["img"], meta["title"], meta["alt"]
 
 
 def get_upload_address(user_token, group_id):
@@ -97,15 +99,11 @@ def main():
     vk_token = env.str("VK_USER_TOKEN")
     vk_group = env.str("VK_GROUP_ID")
 
-    comics_number = get_xkcd_meta()["num"]
+    comics_number = get_xkcd_meta()[0]
     random_id = randint(1, comics_number)
     comic_id = random_id
 
-    comic = get_xkcd_meta(comic_id)
-    comic_image_url = comic["img"]
-    title = comic["title"]
-    alt_text = comic["alt"]
-
+    comic_image_url, title, alt_text = get_xkcd_meta(comic_id)[1:]
     image_path = PurePath(media_folder).joinpath(f"{title}.png")
     try:
         download_image(comic_image_url, media_folder, image_path)
