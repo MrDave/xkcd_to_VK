@@ -104,28 +104,30 @@ def main():
     comic = get_xkcd_meta(comic_id)
     comic_image_url = comic["img"]
     title = comic["title"]
-    image_path = PurePath(media_folder).joinpath(f"{title}.png")
-    download_image(comic_image_url, media_folder, image_path)
     alt_text = comic["alt"]
 
-    upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
-    upload_response = upload_image(upload_address, image_path)
-    upload_response_server = upload_response["server"]
-    upload_response_photo = upload_response["photo"]
-    upload_response_hash = upload_response["hash"]
-    wall_save_response = save_wall_photo(
-        vk_token,
-        vk_group,
-        upload_response_server,
-        upload_response_photo,
-        upload_response_hash
-    )["response"][0]
-    photo_owner = wall_save_response["owner_id"]
-    photo_id = wall_save_response["id"]
-    message_caption = f"{title}\n{alt_text}"
-    wall_post = post_on_wall(vk_token, vk_group, photo_owner, photo_id, message_caption)
-    print(wall_post)
-    Path(image_path).unlink()
+    image_path = PurePath(media_folder).joinpath(f"{title}.png")
+    try:
+        download_image(comic_image_url, media_folder, image_path)
+        upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
+        upload_response = upload_image(upload_address, image_path)
+        upload_response_server = upload_response["server"]
+        upload_response_photo = upload_response["photo"]
+        upload_response_hash = upload_response["hash"]
+        wall_save_response = save_wall_photo(
+            vk_token,
+            vk_group,
+            upload_response_server,
+            upload_response_photo,
+            upload_response_hash
+        )["response"][0]
+        photo_owner = wall_save_response["owner_id"]
+        photo_id = wall_save_response["id"]
+        message_caption = f"{title}\n{alt_text}"
+        wall_post = post_on_wall(vk_token, vk_group, photo_owner, photo_id, message_caption)
+        print(wall_post)
+    finally:
+        Path(image_path).unlink()
 
 
 if __name__ == '__main__':
