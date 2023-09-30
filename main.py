@@ -1,6 +1,5 @@
 import requests
 from pathlib import Path, PurePath
-import argparse
 from environs import Env
 from random import randint
 
