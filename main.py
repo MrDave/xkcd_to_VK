@@ -53,8 +53,9 @@ def upload_image(upload_url, image_path):
 
         response = requests.post(url, files=files)
     response.raise_for_status()
+    response_dict = response.json()
 
-    return response.json()
+    return response_dict["server"], response_dict["photo"], response_dict["hash"]
 
 
 def save_wall_photo(user_token, group_id, response_server, response_photo, response_hash):
@@ -108,16 +109,13 @@ def main():
     try:
         download_image(comic_image_url, media_folder, image_path)
         upload_address = get_upload_address(vk_token, vk_group)["response"]["upload_url"]
-        upload_response = upload_image(upload_address, image_path)
-        upload_response_server = upload_response["server"]
-        upload_response_photo = upload_response["photo"]
-        upload_response_hash = upload_response["hash"]
+        server, photo, vk_hash = upload_image(upload_address, image_path)
         wall_save_response = save_wall_photo(
             vk_token,
             vk_group,
-            upload_response_server,
-            upload_response_photo,
-            upload_response_hash
+            server,
+            photo,
+            vk_hash,
         )["response"][0]
         photo_owner = wall_save_response["owner_id"]
         photo_id = wall_save_response["id"]
