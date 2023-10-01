@@ -39,9 +39,10 @@ def get_upload_address(user_token, group_id):
 
     response = requests.get(url, params=params)
     response.raise_for_status()
-    check_vk_response(response)
+    response_dict = response.json()
+    check_vk_response(response_dict)
 
-    return response.json()
+    return response_dict
 
 
 def upload_image(upload_url, image_path):
@@ -54,7 +55,7 @@ def upload_image(upload_url, image_path):
         response = requests.post(url, files=files)
     response.raise_for_status()
     response_dict = response.json()
-    check_vk_response(response)
+    check_vk_response(response_dict)
 
     return response_dict["server"], response_dict["photo"], response_dict["hash"]
 
@@ -72,9 +73,10 @@ def save_wall_photo(user_token, group_id, response_server, response_photo, respo
 
     response = requests.post(url, params=params)
     response.raise_for_status()
-    check_vk_response(response)
+    response_dict = response.json()
+    check_vk_response(response_dict)
 
-    return response.json()
+    return response_dict
 
 
 def post_on_wall(user_token, group_id, photo_owner, photo_id, caption):
@@ -90,13 +92,13 @@ def post_on_wall(user_token, group_id, photo_owner, photo_id, caption):
 
     response = requests.post(url, params=params)
     response.raise_for_status()
-    check_vk_response(response)
+    response_dict = response.json()
+    check_vk_response(response_dict)
 
-    return response.json()
+    return response_dict
 
 
-def check_vk_response(response):
-    vk_response = response.json()
+def check_vk_response(vk_response):
     if "error" in vk_response:
         error_message = vk_response["error"].get("error_msg", "Unknown error")
         error_code = vk_response["error"].get("error_code", "Unknown error code")
