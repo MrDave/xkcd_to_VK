@@ -28,6 +28,25 @@ def get_xkcd_meta(comic_id=None):
     return meta["num"], meta["img"], meta["title"], meta["alt"]
 
 
+def get_xkcd_num():
+    url = "https://xkcd.com/info.0.json"
+    response = requests.get(url)
+    response.raise_for_status()
+
+    return response.json()["num"]
+
+
+def get_random_xkcd():
+    comics_number = get_xkcd_num()
+    comic_id = randint(1, comics_number)
+    url = f"https://xkcd.com/{comic_id}/info.0.json"
+    response = requests.get(url)
+    response.raise_for_status()
+    meta = response.json()
+
+    return meta["img"], meta["title"], meta["alt"]
+
+
 def get_upload_address(user_token, group_id):
 
     url = "https://api.vk.com/method/photos.getWallUploadServer"
@@ -113,11 +132,7 @@ def main():
     vk_token = env.str("VK_USER_TOKEN")
     vk_group = env.str("VK_GROUP_ID")
 
-    comics_number = get_xkcd_meta()[0]
-    random_id = randint(1, comics_number)
-    comic_id = random_id
-
-    comic_image_url, title, alt_text = get_xkcd_meta(comic_id)[1:]
+    comic_image_url, title, alt_text = get_random_xkcd()
     image_path = PurePath(media_folder).joinpath(f"{title}.png")
     try:
         download_image(comic_image_url, media_folder, image_path)
