@@ -39,11 +39,6 @@ After everything is set up, simply launch the code:
 python main.py
 ```
 
-By default, script posts a random xkcd comic. You can specify a specific one with the use of the following arguments (those are mutually exclusive):
-
--  `--id ID` - id of comic to get
--  `-l`, `--latest` - get the latest comic
-
 Script will upload the comic to the wall of your VK group with the comic's title and alt text as the post caption.
 
 ## Project Goals
