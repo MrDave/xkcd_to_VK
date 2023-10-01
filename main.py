@@ -61,7 +61,7 @@ def get_upload_address(user_token, group_id, api_version):
     response_dict = response.json()
     check_vk_response(response_dict)
 
-    return response_dict
+    return response_dict["response"]["upload_url"]
 
 
 def upload_image(upload_url, image_path):
@@ -137,7 +137,7 @@ def main():
     image_path = PurePath(media_folder).joinpath(f"{title}.png")
     try:
         download_image(comic_image_url, media_folder, image_path)
-        upload_address = get_upload_address(vk_token, vk_group, vk_api_version)["response"]["upload_url"]
+        upload_address = get_upload_address(vk_token, vk_group, vk_api_version)
         server, photo, vk_hash = upload_image(upload_address, image_path)
         wall_save_response = save_wall_photo(
             vk_token,
