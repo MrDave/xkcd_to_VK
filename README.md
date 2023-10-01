@@ -23,6 +23,7 @@ Put the following variables in it:
 - VK_APP_ID - ID of your Vkontakte application (see below) 
 - VK_USER_TOKEN - your user access token from VK
 - VK_GROUP_ID - the group where you will post the comics
+- VK_API_VERSION - [current VK API version](https://vk.com/dev/versions)
 
 ### VK app and user token
 
