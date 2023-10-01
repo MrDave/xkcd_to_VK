@@ -95,7 +95,7 @@ def save_wall_photo(user_token, group_id, response_server, response_photo, respo
     response_dict = response.json()
     check_vk_response(response_dict)
 
-    return response_dict
+    return response_dict["response"][0]["owner_id"], response_dict["response"][0]["id"]
 
 
 def post_on_wall(user_token, group_id, photo_owner, photo_id, caption, api_version):
@@ -139,16 +139,14 @@ def main():
         download_image(comic_image_url, media_folder, image_path)
         upload_address = get_upload_address(vk_token, vk_group, vk_api_version)
         server, photo, vk_hash = upload_image(upload_address, image_path)
-        wall_save_response = save_wall_photo(
+        photo_owner, photo_id = save_wall_photo(
             vk_token,
             vk_group,
             server,
             photo,
             vk_hash,
             vk_api_version,
-        )["response"][0]
-        photo_owner = wall_save_response["owner_id"]
-        photo_id = wall_save_response["id"]
+        )
         message_caption = f"{title}\n{alt_text}"
         wall_post = post_on_wall(vk_token, vk_group, photo_owner, photo_id, message_caption, vk_api_version)
         print(wall_post)
