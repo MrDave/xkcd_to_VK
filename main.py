@@ -4,11 +4,9 @@ from environs import Env
 from random import randint
 
 
-def download_image(url, media_folder, path, params=None):
+def download_image(url, path, params=None):
     response = requests.get(url, params=params)
     response.raise_for_status()
-
-    Path(media_folder).mkdir(exist_ok=True, parents=True)
 
     with open(path, "wb") as file:
         file.write(response.content)
@@ -133,10 +131,12 @@ def main():
     vk_group = env.str("VK_GROUP_ID")
     vk_api_version = env.str("VK_API_VERSION")
 
+    Path(media_folder).mkdir(exist_ok=True, parents=True)
+
     comic_image_url, title, alt_text = get_random_xkcd()
     image_path = PurePath(media_folder).joinpath(f"{title}.png")
     try:
-        download_image(comic_image_url, media_folder, image_path)
+        download_image(comic_image_url, image_path)
         upload_address = get_upload_address(vk_token, vk_group, vk_api_version)
         server, photo, vk_hash = upload_image(upload_address, image_path)
         photo_owner, photo_id = save_wall_photo(
