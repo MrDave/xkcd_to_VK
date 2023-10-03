@@ -21,9 +21,9 @@ def get_xkcd_meta(comic_id=None):
     response = requests.get(url)
     response.raise_for_status()
 
-    meta = response.json()
+    decoded_response = response.json()
 
-    return meta["num"], meta["img"], meta["title"], meta["alt"]
+    return decoded_response["num"], decoded_response["img"], decoded_response["title"], decoded_response["alt"]
 
 
 def get_xkcd_num():
@@ -40,9 +40,9 @@ def get_random_xkcd():
     url = f"https://xkcd.com/{comic_id}/info.0.json"
     response = requests.get(url)
     response.raise_for_status()
-    meta = response.json()
+    decoded_response = response.json()
 
-    return meta["img"], meta["title"], meta["alt"]
+    return decoded_response["img"], decoded_response["title"], decoded_response["alt"]
 
 
 def get_upload_address(user_token, group_id, api_version):
